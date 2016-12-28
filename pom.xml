@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.geccocrawler</groupId>
+	<artifactId>socks5-netty</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.6.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>3.5.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<!--执行脚本的id -->
+						<id>generate-jsw-scripts</id>
+						<!--在maven的package阶段执行 -->
+						<phase>package</phase>
+						<goals>
+							<goal>generate-daemons</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!--打包后生成的目录位置 -->
+					<target>${project.build.directory}/assembler</target>
+					<!--是否将配置文件包含到classpath -->
+					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+					<!--为系统配置文件指定一个目录 -->
+					<configurationDirectory>conf</configurationDirectory>
+					<!--源代码中对应的系统配置文件的位置 -->
+					<configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
+					<!--是否拷贝源代码中配置文件中的目录 -->
+					<copyConfigurationDirectory>true</copyConfigurationDirectory>
+					<!--依赖的lib包的目录格式，flat表示不分目录平铺到lib目录下 -->
+					<repositoryLayout>flat</repositoryLayout>
+					<!--依赖的lib包的目录名称 -->
+					<repositoryName>lib</repositoryName>
+					<daemons>
+						<daemon>
+							<id>proxy</id>
+							<!--系统的入口main函数类 -->
+							<mainClass>com.geccocrawler.socks5.ProxyServer</mainClass>
+							<jvmSettings>
+								<initialMemorySize>256M</initialMemorySize>
+								<maxMemorySize>512M</maxMemorySize>
+								<extraArguments>
+									<extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
+								</extraArguments>
+							</jvmSettings>
+							<generatorConfigurations>
+								<generatorConfiguration>
+									<generator>jsw</generator>
+									<includes>
+										<include>linux-x86-64</include>
+										<includ>windows-x86-64</includ>
+									</includes>
+									<configuration>
+										<property>
+											<!--手动添加一个系统启动时依赖的第一个classpath，这里通常写为配置文件的目录名，如果不配置，配置文件无法找到 -->
+											<name>configuration.directory.in.classpath.first</name>
+											<value>conf</value>
+										</property>
+										<property>
+											<name>wrapper.logfile</name>
+											<value>log/app.log</value>
+										</property>
+									</configuration>
+								</generatorConfiguration>
+							</generatorConfigurations>
+							<platforms>
+								<platform>jsw</platform>
+							</platforms>
+						</daemon>
+					</daemons>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
