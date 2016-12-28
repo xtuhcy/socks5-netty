@@ -3,9 +3,9 @@
 
 ##安装
 
-- 下载git代码
-
-- mvn install
+- 下载git代码 ，mvn install
+ 
+- 或者直接下载bin/proxy
 
 ##运行
 - linux ： target/assembler/jsw/proxy/bin/proxy start
