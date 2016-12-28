@@ -1,0 +1,6 @@
+STATUS | wrapper  | 2016/12/28 16:56:45 | --> Wrapper Started as Console
+STATUS | wrapper  | 2016/12/28 16:56:45 | Launching a JVM...
+INFO   | jvm 1    | 2016/12/28 16:56:45 | Wrapper (Version 3.2.3) http://wrapper.tanukisoftware.org
+INFO   | jvm 1    | 2016/12/28 16:56:45 |   Copyright 1999-2006 Tanuki Software, Inc.  All Rights Reserved.
+INFO   | jvm 1    | 2016/12/28 16:56:45 | 
+INFO   | jvm 1    | 2016/12/28 16:57:01 | [2016.12.28 16:57:01] INFO com.geccocrawler.socks5.log.ProxyFlowLog4j:log(29) - test,1482915419446,1482915419829,10.2.17.71:11080,127.0.0.1:57596,514,6779,7293
