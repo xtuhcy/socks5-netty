@@ -17,24 +17,33 @@ public class ProxyChannelTrafficShapingHandler extends ChannelTrafficShapingHand
 	
 	private ProxyFlowLog proxyFlowLog;
 	
+	private ChannelListener channelListener;
+	
 	public static ProxyChannelTrafficShapingHandler get(ChannelHandlerContext ctx) {
 		return (ProxyChannelTrafficShapingHandler)ctx.pipeline().get(PROXY_TRAFFIC);
 	}
 	
-	public ProxyChannelTrafficShapingHandler(long checkInterval, ProxyFlowLog proxyFlowLog) {
+	public ProxyChannelTrafficShapingHandler(long checkInterval, ProxyFlowLog proxyFlowLog, ChannelListener channelListener) {
 		super(checkInterval);
 		this.proxyFlowLog = proxyFlowLog;
+		this.channelListener = channelListener;
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		beginTime = System.currentTimeMillis();
+		if(channelListener != null) {
+			channelListener.active(ctx);
+		}
 		super.channelActive(ctx);
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		endTime = System.currentTimeMillis();
+		if(channelListener != null) {
+			channelListener.inActive(ctx);
+		}
 		proxyFlowLog.log(ctx);
 		super.channelInactive(ctx);
 	}

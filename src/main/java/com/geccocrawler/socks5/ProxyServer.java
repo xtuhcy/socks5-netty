@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.geccocrawler.socks5.auth.PasswordAuth;
 import com.geccocrawler.socks5.auth.PropertiesPasswordAuth;
+import com.geccocrawler.socks5.handler.ChannelListener;
 import com.geccocrawler.socks5.handler.ProxyChannelTrafficShapingHandler;
 import com.geccocrawler.socks5.handler.ProxyIdleHandler;
 import com.geccocrawler.socks5.handler.ss5.Socks5CommandRequestHandler;
@@ -17,6 +18,7 @@ import com.geccocrawler.socks5.log.ProxyFlowLog4j;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -41,6 +43,8 @@ public class ProxyServer {
 	private boolean logging;
 	
 	private ProxyFlowLog proxyFlowLog;
+	
+	private ChannelListener channelListener;
 	
 	private PasswordAuth passwordAuth;
 	
@@ -67,6 +71,11 @@ public class ProxyServer {
 		return this;
 	}
 	
+	public ProxyServer channelListener(ChannelListener channelListener) {
+		this.channelListener = channelListener;
+		return this;
+	}
+	
 	public ProxyServer passwordAuth(PasswordAuth passwordAuth) {
 		this.passwordAuth = passwordAuth;
 		return this;
@@ -76,6 +85,10 @@ public class ProxyServer {
 		return proxyFlowLog;
 	}
 	
+	public ChannelListener getChannelListener() {
+		return channelListener;
+	}
+
 	public PasswordAuth getPasswordAuth() {
 		return passwordAuth;
 	}
@@ -109,7 +122,7 @@ public class ProxyServer {
 					//流量统计
 					ch.pipeline().addLast(
 							ProxyChannelTrafficShapingHandler.PROXY_TRAFFIC, 
-							new ProxyChannelTrafficShapingHandler(3000, proxyFlowLog)
+							new ProxyChannelTrafficShapingHandler(3000, proxyFlowLog, channelListener)
 							);
 					//channel超时处理
 					ch.pipeline().addLast(new IdleStateHandler(3, 30, 0));
