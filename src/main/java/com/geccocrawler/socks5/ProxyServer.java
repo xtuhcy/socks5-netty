@@ -146,7 +146,8 @@ public class ProxyServer {
 					//socks connection
 					ch.pipeline().addLast(new Socks5CommandRequestDecoder());
 					//Socks connection
-					ch.pipeline().addLast(new Socks5CommandRequestHandler());
+					EventLoopGroup bossGroup= new NioEventLoopGroup();
+					ch.pipeline().addLast(new Socks5CommandRequestHandler(bossGroup));
 				}
 			});
 			
