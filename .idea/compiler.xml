@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="socks5-netty" target="1.5" />
+      <module name="socks5-netty" target="1.9" />
     </bytecodeTargetLevel>
   </component>
 </project>
