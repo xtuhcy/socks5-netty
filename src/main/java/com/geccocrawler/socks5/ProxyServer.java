@@ -33,7 +33,13 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
 public class ProxyServer {
-	
+
+	private EventLoopGroup bossGroup=new NioEventLoopGroup();
+
+	public EventLoopGroup getBossGroup() {
+		return bossGroup;
+	}
+
 	private static final Logger logger = LoggerFactory.getLogger(ProxyServer.class);
 	
 	private int port;
@@ -146,7 +152,7 @@ public class ProxyServer {
 					//socks connection
 					ch.pipeline().addLast(new Socks5CommandRequestDecoder());
 					//Socks connection
-					ch.pipeline().addLast(new Socks5CommandRequestHandler());
+					ch.pipeline().addLast(new Socks5CommandRequestHandler(ProxyServer.this.getBossGroup()));
 				}
 			});
 			
