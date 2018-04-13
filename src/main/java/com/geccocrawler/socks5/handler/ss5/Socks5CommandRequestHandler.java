@@ -23,15 +23,20 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 
 public class Socks5CommandRequestHandler extends SimpleChannelInboundHandler<DefaultSocks5CommandRequest>{
+	EventLoopGroup bossGroup;
 	
 	private static final Logger logger = LoggerFactory.getLogger(Socks5CommandRequestHandler.class);
-	
+
+	public Socks5CommandRequestHandler(EventLoopGroup bossGroup) {
+		this.bossGroup=bossGroup;
+	}
+
 	@Override
 	protected void channelRead0(final ChannelHandlerContext clientChannelContext, DefaultSocks5CommandRequest msg) throws Exception {
 		logger.debug("目标服务器  : " + msg.type() + "," + msg.dstAddr() + "," + msg.dstPort());
 		if(msg.type().equals(Socks5CommandType.CONNECT)) {
 			logger.trace("准备连接目标服务器");
-			EventLoopGroup bossGroup = new NioEventLoopGroup();
+
 			Bootstrap bootstrap = new Bootstrap();
 			bootstrap.group(bossGroup)
 			.channel(NioSocketChannel.class)
